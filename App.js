@@ -16,6 +16,7 @@ const STORAGE_KEY_WORKING = "@working"
 export default function App() {
   const [working, setWorking] = useState(true);
   const [text, setText] = useState("");
+  const [completed, setCompleted] = useState(false);
   const [toDos, setToDos] = useState({});
   const travel = async () => {
     setWorking(false);
@@ -38,9 +39,9 @@ export default function App() {
   const loadToDos = async () => {
       const s = await AsyncStorage.getItem(STORAGE_KEY);
       setToDos(JSON.parse(s));
+
       // challenge 1 
       const w = await AsyncStorage.getItem(STORAGE_KEY_WORKING);
-      console.log(w)
       const {working:ISWORKING}= JSON.parse(w)
       setWorking(ISWORKING)
   }
@@ -57,11 +58,12 @@ export default function App() {
     //                                 {[Date.now()]:{text, work:working}})
 
     const newToDos = {...toDos, 
-                      [Date.now()]:{text, working}};
-    // save to do 
+                      [Date.now()]:{text, working, completed}};
+    // save to do
     setToDos(newToDos);
     await saveTodos(newToDos);
     setText("");
+  
   }
 
   const deleteToDo = async (key) => {
@@ -80,6 +82,27 @@ export default function App() {
                 ]);
     return ;
   }
+
+  const completeToDo = async (key) =>{
+
+    const originToDos = {...toDos}
+    delete originToDos[key];
+
+    const obj = {
+      [key]:{
+        text: toDos[key].text,
+        working: toDos[key].working,
+        completed: !toDos[key].completed
+      }
+    };
+
+    const newToDos = {...originToDos, ...obj}
+
+    console.log(newToDos)
+    setToDos(newToDos);
+    await saveTodos(newToDos);
+  }
+
 
   return (
     <View style={styles.container}>
@@ -105,6 +128,15 @@ export default function App() {
                         toDos[key].working === working ? (
                                               <View key={key}
                                                     style={styles.toDo}>
+                                                { toDos[key].completed ? (
+                                                                          <TouchableOpacity onPress={() => completeToDo(key)}>
+                                                                              <Fontisto name="checkbox-active" size={26} color={theme.grey} />
+                                                                          </TouchableOpacity>      )
+                                                                       : (
+                                                                          <TouchableOpacity onPress={() => completeToDo(key)}>
+                                                                              <Fontisto name="checkbox-passive" size={26} color={theme.grey} />
+                                                                          </TouchableOpacity>      )
+                                                }
                                                 <Text style={styles.toDoText}>
                                                   {toDos[key].text}
                                                 </Text>
