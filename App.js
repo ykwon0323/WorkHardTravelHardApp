@@ -45,7 +45,14 @@ export default function App() {
       const {working:ISWORKING}= JSON.parse(w)
       setWorking(ISWORKING)
   }
+  // Data Clear
+  const removeDatas = async () => {
+    await AsyncStorage.setItem(STORAGE_KEY,  JSON.stringify({}));
+    await AsyncStorage.setItem(STORAGE_KEY_WORKING,  JSON.stringify({working: false}));
+  }
+
   useEffect(() =>{
+    // removeDatas();
     loadToDos();
   }, []);
   
@@ -85,20 +92,26 @@ export default function App() {
 
   const completeToDo = async (key) =>{
 
-    const originToDos = {...toDos}
-    delete originToDos[key];
+    // const originToDos = {...toDos}
+    // delete originToDos[key];
 
-    const obj = {
-      [key]:{
-        text: toDos[key].text,
-        working: toDos[key].working,
-        completed: !toDos[key].completed
-      }
-    };
+    // const obj = {
+    //   [key]:{
+    //     text: toDos[key].text,
+    //     working: toDos[key].working,
+    //     completed: !toDos[key].completed
+    //   }
+    // };
 
-    const newToDos = {...originToDos, ...obj}
+    // const newToDos = {...originToDos, ...obj}
+    
+    // Object.assign 을 하면 덮어쓰기가 가능하다
+    const newToDos = Object.assign({}, 
+                                      toDos, 
+                                      {[key]:{text: toDos[key].text, 
+                                              working: toDos[key].working,
+                                              completed: !toDos[key].completed}})
 
-    console.log(newToDos)
     setToDos(newToDos);
     await saveTodos(newToDos);
   }
