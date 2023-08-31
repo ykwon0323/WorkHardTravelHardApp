@@ -3,7 +3,7 @@ import { StyleSheet, Text, ScrollView, View, TouchableOpacity,TextInput, Touchab
 import { theme } from './colors';
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Fontisto } from '@expo/vector-icons'; 
+import { Fontisto, AntDesign } from '@expo/vector-icons'; 
 
 const STORAGE_KEY = "@toDos"
 const STORAGE_KEY_WORKING = "@working"
@@ -104,7 +104,7 @@ export default function App() {
     // };
 
     // const newToDos = {...originToDos, ...obj}
-    
+
     // Object.assign 을 하면 덮어쓰기가 가능하다
     const newToDos = Object.assign({}, 
                                       toDos, 
@@ -150,11 +150,16 @@ export default function App() {
                                                                               <Fontisto name="checkbox-passive" size={26} color={theme.grey} />
                                                                           </TouchableOpacity>      )
                                                 }
-                                                <Text style={styles.toDoText}>
+                                                {/* <Text style={styles.toDoText}>
                                                   {toDos[key].text}
-                                                </Text>
+                                                </Text> */}
+                                                <TextInput value={toDos[key].text}
+                                                           style={styles.editInput}/>
                                                 <TouchableOpacity onPress={() => deleteToDo(key)}>
-                                                    <Fontisto name="trash" size={18} color={theme.grey} />
+                                                    <AntDesign name="edit" size={26} color={theme.grey} />
+                                                </TouchableOpacity>
+                                                <TouchableOpacity onPress={() => deleteToDo(key)}>
+                                                    <Fontisto name="trash" size={26} color={theme.grey} />
                                                 </TouchableOpacity>
                                               </View>
                                               ) 
@@ -192,7 +197,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.toDoBg,
     marginBottom: 10,
     paddingVertical: 20,
-    paddingHorizontal: 40,
+    paddingHorizontal: 10,
     borderRadius: 15,
     flexDirection: "row",
     alignItems: 'center',
@@ -202,5 +207,16 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "500",
-  }
+    flex:1,
+    paddingHorizontal: 10,
+  },
+  editInput:{
+    backgroundColor: "white",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginHorizontal: 5,
+    borderRadius: 10,
+    fontSize: 18,
+    flex: 1,
+  },
 });
